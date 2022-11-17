@@ -4,13 +4,14 @@ ThisBuild / scalaVersion := scala213
 ThisBuild / version := "1.0"
 ThisBuild / organization := "org.example.todo"
 
-val catsVersion = "2.1.1"
-val catsEffectVersion = "3.2.0"
-val http4sVersion = "1.0.0-M21"
-val circeVersion = "0.14.0-M5"
-val logbackVersion = "1.2.3"
-val scalaTestVersion = "3.2.9"
-val doobieVersion = "1.0.0-RC1"
+lazy val catsVersion = "2.9.0"
+lazy val catsEffectVersion = "3.4.0"
+lazy val http4sVersion = "1.0.0-M21"
+lazy val circeVersion = "0.14.3"
+lazy val logbackVersion = "1.4.4"
+lazy val scalaTestVersion = "3.2.14"
+lazy val doobieVersion = "1.0.0-RC1"
+lazy val pureConfigVersion = "0.17.2"
 
 libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
@@ -19,6 +20,10 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-circe" % http4sVersion,
   "org.http4s" %% "http4s-dsl" % http4sVersion,
   "io.circe" %% "circe-generic" % circeVersion,
+
+  // pureconfig
+  "com.github.pureconfig" %% "pureconfig" % pureConfigVersion,
+  "com.github.pureconfig" %% "pureconfig-cats-effect" % pureConfigVersion,
 
   // Repository
   "org.tpolecat" %% "doobie-core" % doobieVersion,
