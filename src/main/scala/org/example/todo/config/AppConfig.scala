@@ -12,8 +12,10 @@ final case class DatabaseConfig(
     driver: String,
     url: String,
     user: String,
-    password: String
+    password: String,
+    threadPoolSize: Int
 )
+
 case class Config(server: ServerConfig, database: DatabaseConfig)
 
 object AppConfig {
