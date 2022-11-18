@@ -7,11 +7,11 @@ import cats.effect._
 import cats.effect.kernel.Resource
 import doobie.ExecutionContexts
 import doobie.util.transactor.Transactor
-import org.example.todo.api.Api
+import org.example.todo.api.Apis
 import org.example.todo.config.{AppConfig, Config}
 import org.example.todo.db.Database
-import org.example.todo.repository.ToDoRepository
-import org.example.todo.service.ToDoService
+import org.example.todo.repository.Dao
+import org.example.todo.service.Services
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.{Request, Response}
 
@@ -26,7 +26,7 @@ object HttpServer {
     xa <- Database.transactor(config.database, ec)
   } yield Resources(config, xa)
 
-  private def create(resources: Resources) =
+  private def create(resources: Resources): IO[ExitCode] =
     for {
       exitCode <- BlazeServerBuilder[IO](ExecutionContext.global)
         .bindHttp(
@@ -43,9 +43,9 @@ object HttpServer {
   private def getHttpRoutes(
       xa: Transactor[IO]
   ): Kleisli[IO, Request[IO], Response[IO]] = {
-    val dao = new ToDoRepository(xa)
-    val toDoService = new ToDoService(dao)
-    val api = new Api(toDoService)
+    val dao: Dao = new Dao(xa)
+    val services: Services = new Services(dao)
+    val api: Apis = new Apis(services)
     api.httpRoutes
   }
 
