@@ -1,0 +1,136 @@
+{
+	"info": {
+		"_postman_id": "e7657e55-0100-4813-9d84-03017506e9a5",
+		"name": "Todo API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5944425"
+	},
+	"item": [
+		{
+			"name": "Create new Todo",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"description\": \"My first todo\",\n    \"importance\": \"low\"\n}"
+				},
+				"url": {
+					"raw": "localhost:18000/todos",
+					"host": [
+						"localhost"
+					],
+					"port": "18000",
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Todo",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:18000/todos/:todoId",
+					"host": [
+						"localhost"
+					],
+					"port": "18000",
+					"path": [
+						"todos",
+						":todoId"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					],
+					"variable": [
+						{
+							"key": "todoId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Todo",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"description\": \"My first todo\",\n    \"importance\": \"medium\"\n}"
+				},
+				"url": {
+					"raw": "localhost:18000/todos/:todoId",
+					"host": [
+						"localhost"
+					],
+					"port": "18000",
+					"path": [
+						"todos",
+						":todoId"
+					],
+					"variable": [
+						{
+							"key": "todoId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Todos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:18000/todos",
+					"host": [
+						"localhost"
+					],
+					"port": "18000",
+					"path": [
+						"todos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Todo",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:18000/todos/:todoId",
+					"host": [
+						"localhost"
+					],
+					"port": "18000",
+					"path": [
+						"todos",
+						":todoId"
+					],
+					"variable": [
+						{
+							"key": "todoId",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

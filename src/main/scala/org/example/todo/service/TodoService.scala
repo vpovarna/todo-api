@@ -2,13 +2,16 @@ package org.example.todo.service
 
 import cats.effect.IO
 import fs2.Stream
+import io.circe.{Decoder, Encoder}
 import io.circe.generic.auto._
 import io.circe.syntax._
 import org.example.todo.model
-import org.example.todo.model.{Todo, TodoNotFoundError}
+import org.example.todo.model.{Importance, Todo, TodoNotFoundError}
 import org.example.todo.repository.TodoDao
 
 class TodoService(dao: TodoDao) {
+  private implicit val encoderImportance: Encoder[Importance] =
+    Encoder.encodeString.contramap[Importance](_.value)
 
   def getTodos: Stream[IO, String] = {
     Stream("[") ++
