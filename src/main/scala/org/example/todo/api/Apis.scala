@@ -9,9 +9,11 @@ import org.http4s.{Request, Response}
 
 class Apis(service: Services) {
   val genericApi = new GenericApi(service.genericService)
+  val todoApi = new TodoApi(service.todoService)
 
   val httpRoutes: Kleisli[IO, Request[IO], Response[IO]] = Router(
-    "/" -> genericApi.routes
+    "/" -> genericApi.routes,
+    "todos" -> todoApi.routes
   ).orNotFound
 
 }
