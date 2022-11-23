@@ -2,7 +2,6 @@ package org.example.todo
 
 import scala.concurrent.ExecutionContext
 
-import cats.data.Kleisli
 import cats.effect._
 import cats.effect.kernel.Resource
 import doobie.ExecutionContexts
@@ -13,7 +12,6 @@ import org.example.todo.db.Database
 import org.example.todo.repository.Dao
 import org.example.todo.service.Services
 import org.http4s.server.blaze.BlazeServerBuilder
-import org.http4s.{Request, Response}
 
 object HttpServer {
 
@@ -40,9 +38,7 @@ object HttpServer {
     } yield exitCode
 
   // Wiring
-  private def getHttpRoutes(
-      xa: Transactor[IO]
-  ): Kleisli[IO, Request[IO], Response[IO]] = {
+  private def getHttpRoutes(xa: Transactor[IO]) = {
     val dao: Dao = new Dao(xa)
     val services: Services = new Services(dao)
     val api: Apis = new Apis(services)
