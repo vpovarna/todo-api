@@ -56,9 +56,7 @@ object HttpServer {
     val dao: Dao = new Dao(xa)
     val services: Services = new Services(dao)
     val api: Apis = new Apis(services, metricsResources)
-    val metricsRoutes: HttpRoutes[IO] = metricsResources.metricsService.routes
-    val todoHttpRoutes: Kleisli[IO, Request[IO], Response[IO]] = api.httpRoutes
-    todoHttpRoutes
+    api.httpRoutes
   }
 
   final case class Resources(
