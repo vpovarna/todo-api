@@ -30,6 +30,9 @@ libraryDependencies ++= Seq(
   "org.tpolecat" %% "doobie-postgres" % doobieVersion,
   "org.tpolecat" %% "doobie-hikari" % doobieVersion,
 
+  // Metrics
+  "org.http4s" %% "http4s-prometheus-metrics" % http4sVersion,
+
   // Logs
   "ch.qos.logback" % "logback-classic" % logbackVersion,
 

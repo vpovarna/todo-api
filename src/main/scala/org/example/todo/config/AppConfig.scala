@@ -16,7 +16,13 @@ final case class DatabaseConfig(
     threadPoolSize: Int
 )
 
-case class Config(server: ServerConfig, database: DatabaseConfig)
+final case class MetricsConfig(prefixName: String)
+
+final case class Config(
+    server: ServerConfig,
+    database: DatabaseConfig,
+    metrics: MetricsConfig
+)
 
 object AppConfig {
 
