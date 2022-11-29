@@ -1,45 +1,58 @@
-val scala213 = "2.13.8"
+lazy val commonSettings = Seq(
+  name := "todo api",
+  version := "1.0-SNAPSHOT",
+  scalaVersion := "2.13.8",
+  organization := "org.example.todo",
+  scalacOptions ++= Seq(
+    "-deprecation",
+    "-language:higherKinds",
+    "-Xfatal-warnings",
+    "-Ywarn-value-discard",
+    "-Xlint:missing-interpolator"
+  )
+)
 
-ThisBuild / scalaVersion := scala213
-ThisBuild / version := "1.0"
-ThisBuild / organization := "org.example.todo"
-
-lazy val catsVersion = "2.9.0"
-lazy val catsEffectVersion = "3.4.0"
 lazy val http4sVersion = "1.0.0-M21"
-lazy val circeVersion = "0.14.3"
+lazy val circeVersion = "0.14.1"
 lazy val logbackVersion = "1.2.11"
 lazy val scalaTestVersion = "3.2.14"
 lazy val doobieVersion = "1.0.0-RC1"
 lazy val pureConfigVersion = "0.17.2"
+lazy val scalaMockVersion = "5.2.0"
 
-libraryDependencies ++= Seq(
-  "org.typelevel" %% "cats-core" % catsVersion,
-  "org.typelevel" %% "cats-effect" % catsEffectVersion,
-  "org.http4s" %% "http4s-blaze-server" % http4sVersion,
-  "org.http4s" %% "http4s-circe" % http4sVersion,
-  "org.http4s" %% "http4s-dsl" % http4sVersion,
-  "io.circe" %% "circe-generic" % circeVersion,
+lazy val root = (project in file("."))
+  .configs(IntegrationTest)
+  .settings(
+    commonSettings,
+    Defaults.itSettings,
+    libraryDependencies ++= Seq(
+      "org.http4s" %% "http4s-blaze-server" % http4sVersion,
+      "org.http4s" %% "http4s-circe" % http4sVersion,
+      "org.http4s" %% "http4s-dsl" % http4sVersion,
+      "org.http4s" %% "http4s-blaze-client" % http4sVersion % "it,test",
 
-  // pureconfig
-  "com.github.pureconfig" %% "pureconfig" % pureConfigVersion,
-  "com.github.pureconfig" %% "pureconfig-cats-effect" % pureConfigVersion,
+      // circe
+      "io.circe" %% "circe-generic" % circeVersion,
+      "io.circe" %% "circe-literal" % circeVersion % "it,test",
+      "io.circe" %% "circe-optics" % circeVersion % "it",
 
-  // Repository
-  "org.tpolecat" %% "doobie-core" % doobieVersion,
-  "org.tpolecat" %% "doobie-postgres" % doobieVersion,
-  "org.tpolecat" %% "doobie-hikari" % doobieVersion,
+      // pureconfig
+      "com.github.pureconfig" %% "pureconfig" % pureConfigVersion,
+      "com.github.pureconfig" %% "pureconfig-cats-effect" % pureConfigVersion,
 
-  // Metrics
-  "org.http4s" %% "http4s-prometheus-metrics" % http4sVersion,
+      // Repository
+      "org.tpolecat" %% "doobie-core" % doobieVersion,
+      "org.tpolecat" %% "doobie-postgres" % doobieVersion,
+      "org.tpolecat" %% "doobie-hikari" % doobieVersion,
 
-  // Logs
-  "ch.qos.logback" % "logback-classic" % logbackVersion,
+      // Metrics
+      "org.http4s" %% "http4s-prometheus-metrics" % http4sVersion,
 
-  // Test libs
-  "org.scalatest" %% "scalatest" % scalaTestVersion % "test"
-)
+      // Logs
+      "ch.qos.logback" % "logback-classic" % logbackVersion,
 
-scalacOptions ++= Seq(
-  "-language:higherKinds"
-)
+      // Test libs
+      "org.scalatest" %% "scalatest" % scalaTestVersion % "it,test",
+      "org.scalamock" %% "scalamock" % scalaMockVersion % "test"
+    )
+  )
