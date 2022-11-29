@@ -1,5 +1,5 @@
 lazy val commonSettings = Seq(
-  name := "todo api",
+  name := "todo-api",
   version := "1.0-SNAPSHOT",
   scalaVersion := "2.13.8",
   organization := "org.example.todo",
