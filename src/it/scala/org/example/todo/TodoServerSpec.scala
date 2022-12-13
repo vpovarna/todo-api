@@ -26,7 +26,7 @@ class TodoServerSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll {
 
   private implicit val runtime: IORuntime = cats.effect.unsafe.IORuntime.global
   private lazy val config: Config =
-    AppConfig.load(configFile).use(config => IO.pure(config)).unsafeRunSync()
+    AppConfig.load(configFile).unsafeRunSync()
   private lazy val testEndpointUrl: String =
     s"http://${config.server.host}:${config.server.port}"
 
