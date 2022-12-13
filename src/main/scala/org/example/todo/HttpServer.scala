@@ -15,15 +15,23 @@ import org.example.todo.service.Services
 import org.http4s.metrics.MetricsOps
 import org.http4s.metrics.prometheus.{Prometheus, PrometheusExportService}
 import org.http4s.server.blaze.BlazeServerBuilder
-import org.http4s.{HttpRoutes, Request, Response}
+import org.http4s.{Request, Response}
 
 object HttpServer {
 
   def create(configFile: String = "application.conf"): IO[ExitCode] =
-    resources(configFile).use(create)
+    buildResources(configFile).use(create)
 
-  private def resources(configFile: String): Resource[IO, Resources] = for {
-    config <- AppConfig.load(configFile)
+  def create(config: Config): IO[ExitCode] =
+    getResources(config).use(create)
+
+  private def buildResources(configFile: String): Resource[IO, Resources] =
+    for {
+      config <- AppConfig.load(configFile)
+      resources <- getResources(config: Config)
+    } yield resources
+
+  private def getResources(config: Config): Resource[IO, Resources] = for {
     ec <- ExecutionContexts.fixedThreadPool[IO](config.database.threadPoolSize)
     xa <- Database.transactor(config.database, ec)
     metricsService <- PrometheusExportService.build[IO]

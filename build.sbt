@@ -19,6 +19,7 @@ lazy val scalaTestVersion = "3.2.14"
 lazy val doobieVersion = "1.0.0-RC1"
 lazy val pureConfigVersion = "0.17.2"
 lazy val scalaMockVersion = "5.2.0"
+lazy val testcontainersPostgresVersion = "1.15.3"
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
@@ -50,6 +51,9 @@ lazy val root = (project in file("."))
 
       // Logs
       "ch.qos.logback" % "logback-classic" % logbackVersion,
+
+      // Test containers
+      "org.testcontainers" % "postgresql" % testcontainersPostgresVersion % "it, test",
 
       // Test libs
       "org.scalatest" %% "scalatest" % scalaTestVersion % "it,test",
