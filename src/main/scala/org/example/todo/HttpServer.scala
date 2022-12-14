@@ -4,34 +4,24 @@ import scala.concurrent.ExecutionContext
 
 import cats.data.Kleisli
 import cats.effect._
-import cats.effect.kernel.Resource
-import doobie.ExecutionContexts
 import doobie.util.transactor.Transactor
 import org.example.todo.api.Apis
-import org.example.todo.config.{AppConfig, Config}
-import org.example.todo.db.Database
+import org.example.todo.config.Config
 import org.example.todo.repository.Dao
+import org.example.todo.resources.ResourcesFactory.{Resources, getResources}
 import org.example.todo.service.Services
 import org.http4s.metrics.MetricsOps
-import org.http4s.metrics.prometheus.{Prometheus, PrometheusExportService}
+import org.http4s.metrics.prometheus.PrometheusExportService
 import org.http4s.server.blaze.BlazeServerBuilder
-import org.http4s.{HttpRoutes, Request, Response}
+import org.http4s.{Request, Response}
 
 object HttpServer {
 
   def create(configFile: String = "application.conf"): IO[ExitCode] =
-    resources(configFile).use(create)
+    getResources(configFile).use(create)
 
-  private def resources(configFile: String): Resource[IO, Resources] = for {
-    config <- AppConfig.load(configFile)
-    ec <- ExecutionContexts.fixedThreadPool[IO](config.database.threadPoolSize)
-    xa <- Database.transactor(config.database, ec)
-    metricsService <- PrometheusExportService.build[IO]
-    metrics <- Prometheus.metricsOps[IO](
-      metricsService.collectorRegistry,
-      config.metrics.prefixName
-    )
-  } yield Resources(config, xa, MetricsComponents(metrics, metricsService))
+  def create(config: Config): IO[ExitCode] =
+    buildResources(config).use(create)
 
   private def create(resources: Resources): IO[ExitCode] =
     for {
@@ -59,15 +49,8 @@ object HttpServer {
     api.httpRoutes
   }
 
-  final case class Resources(
-      config: Config,
-      transactor: Transactor[IO],
-      metricsComponents: MetricsComponents
-  )
-
   final case class MetricsComponents(
       metricsOps: MetricsOps[IO],
       metricsService: PrometheusExportService[IO]
   )
-
 }

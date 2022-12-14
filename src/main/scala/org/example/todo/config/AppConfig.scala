@@ -1,6 +1,6 @@
 package org.example.todo.config
 
-import cats.effect.{IO, Resource}
+import cats.effect.IO
 import com.typesafe.config.ConfigFactory
 import pureconfig._
 import pureconfig.generic.auto._
@@ -26,10 +26,9 @@ final case class Config(
 
 object AppConfig {
 
-  def load(configFile: String = "application.conf"): Resource[IO, Config] =
-    Resource.eval(
-      ConfigSource
-        .fromConfig(ConfigFactory.load(configFile))
-        .loadF[IO, Config]()
-    )
+  def load(configFile: String = "application.conf"): IO[Config] =
+    ConfigSource
+      .fromConfig(ConfigFactory.load(configFile))
+      .loadF[IO, Config]()
+
 }

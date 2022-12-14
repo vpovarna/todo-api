@@ -8,7 +8,7 @@ import cats.effect.{ExitCode, IO}
 import io.circe.Json
 import io.circe.literal._
 import io.circe.optics.JsonPath.root
-import org.example.todo.config.AppConfig
+import org.example.todo.config.{AppConfig, Config}
 import org.http4s.circe._
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.{Method, Request, Status, Uri}
@@ -25,15 +25,27 @@ class TodoServerSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll {
   private val configFile = "test.conf"
 
   private implicit val runtime: IORuntime = cats.effect.unsafe.IORuntime.global
-  private lazy val config =
-    AppConfig.load(configFile).use(config => IO.pure(config)).unsafeRunSync()
-  private lazy val testEndpointUrl =
+  private lazy val config: Config =
+    AppConfig.load(configFile).unsafeRunSync()
+  private lazy val testEndpointUrl: String =
     s"http://${config.server.host}:${config.server.port}"
+
+  private val psql: PostgreSQL = new PostgreSQL(
+    initScript = "init.sql",
+    resourceMapping = Map.empty
+  )
 
   private val logger = LoggerFactory.getLogger(classOf[TodoServerSpec])
 
   override def beforeAll(): Unit = {
-    HttpServer.create(configFile).unsafeRunAsync(resultHandler)
+    val databaseConfig = config.database
+    val newDatabaseConfig =
+      databaseConfig.copy(url = psql.config.getString("url"))
+
+    val testConfig = config.copy(database = newDatabaseConfig)
+    println(testConfig)
+
+    HttpServer.create(testConfig).unsafeRunAsync(resultHandler)
     eventually {
       httpClient
         .use(
@@ -42,6 +54,10 @@ class TodoServerSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll {
         .unsafeRunSync() shouldBe Status.Ok
     }
     ()
+  }
+
+  override def afterAll(): Unit = {
+    psql.stop()
   }
 
   "Todo service" should {
