@@ -21,7 +21,7 @@ object HttpServer {
     getResources(configFile).use(create)
 
   def create(config: Config): IO[ExitCode] =
-    buildResources(config).use(create)
+    getResources(config).use(create)
 
   private def create(resources: Resources): IO[ExitCode] =
     for {

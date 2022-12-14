@@ -18,7 +18,6 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.slf4j.LoggerFactory
 
-//TODO: Use embedded postgres or test container
 class TodoServerSpec extends AnyWordSpec with Matchers with BeforeAndAfterAll {
   private lazy val httpClient =
     BlazeClientBuilder[IO](ExecutionContext.global).resource
